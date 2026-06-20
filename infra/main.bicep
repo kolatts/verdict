@@ -66,7 +66,7 @@ resource consumptionPlan 'Microsoft.Web/serverfarms@2023-01-01' = {
 var storageConnectionString = 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
 
 resource functionApp 'Microsoft.Web/sites@2023-01-01' = {
-  name: '${namePrefix}-fn'
+  name: '${namePrefix}-backend'
   location: location
   kind: 'functionapp'
   properties: {
@@ -89,6 +89,7 @@ resource functionApp 'Microsoft.Web/sites@2023-01-01' = {
         { name: 'TableConnection',               value: storageConnectionString }
         { name: 'APPINSIGHTS_INSTRUMENTATIONKEY', value: appInsights.properties.InstrumentationKey }
         { name: 'APPLICATIONINSIGHTS_CONNECTION_STRING', value: appInsights.properties.ConnectionString }
+        { name: 'WEBSITE_USE_PLACEHOLDER_DOTNETISOLATED', value: '1' }
       ]
     }
   }

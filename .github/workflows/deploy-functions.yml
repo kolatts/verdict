@@ -7,6 +7,7 @@ on:
     paths:
       - 'src/**'
       - 'tests/**'
+      - 'infra/**'
       - '.github/workflows/deploy-functions.yml'
 
 permissions:
@@ -133,11 +134,20 @@ jobs:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
 
+      - name: Deploy infrastructure (Bicep)
+        run: |
+          az deployment group create \
+            --resource-group rg-verdict \
+            --subscription ${{ vars.AZURE_SUBSCRIPTION_ID }} \
+            --template-file infra/main.bicep \
+            --parameters infra/main.parameters.json \
+            --mode Incremental
+
       - name: Zip and deploy to Function App
         run: |
           cd ./publish && zip -r ../publish.zip . && cd ..
           az functionapp deployment source config-zip \
-            --name verdict-fn \
+            --name verdict-backend \
             --resource-group rg-verdict \
             --subscription ${{ vars.AZURE_SUBSCRIPTION_ID }} \
             --src publish.zip
