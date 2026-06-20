@@ -94,9 +94,9 @@ jobs:
           azurite --silent --location .azurite-test &
           sleep 3
 
-          cd src/Verdict.Functions
+          cd src/Verdict.Functions/bin/Release/net10.0
           func start --no-build &
-          cd ../..
+          cd ../../../../..
 
           http-server docs -p 8080 -c-1 --silent &
           sleep 20   # .NET cold start needs ~15-20 s on GitHub runners
