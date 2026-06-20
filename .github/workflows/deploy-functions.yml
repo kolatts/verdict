@@ -1,0 +1,135 @@
+name: Build, test & deploy Azure Functions
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - '.github/workflows/deploy-functions.yml'
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build-test:
+    name: Build & unit test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.x'
+
+      - name: Restore
+        run: dotnet restore src/Verdict.Functions/Verdict.Functions.csproj
+
+      - name: Build
+        run: dotnet build src/Verdict.Functions/Verdict.Functions.csproj -c Release --no-restore
+
+      - name: Publish (create deployment artifact)
+        run: dotnet publish src/Verdict.Functions/Verdict.Functions.csproj -c Release --no-build -o ./publish
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: functions-publish
+          path: ./publish
+
+  e2e-test:
+    name: Reqnroll E2E (3-player, Playwright)
+    runs-on: ubuntu-latest
+    needs: build-test
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.x'
+
+      - name: Setup Node 22 (Azurite + http-server)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Azurite and http-server
+        run: npm install -g azurite http-server
+
+      - name: Install Azure Functions Core Tools
+        run: npm install -g azure-functions-core-tools@4 --unsafe-perm true
+
+      - name: Build Functions (Release)
+        run: dotnet build src/Verdict.Functions/Verdict.Functions.csproj -c Release
+
+      - name: Build E2E tests
+        run: dotnet build tests/Verdict.E2E/Verdict.E2E.csproj -c Release
+
+      - name: Install Playwright browsers
+        run: pwsh tests/Verdict.E2E/bin/Release/net10.0/playwright.ps1 install --with-deps chromium
+
+      - name: Start dev stack (Azurite + Functions + static server)
+        run: |
+          mkdir -p .azurite-test
+          azurite --silent --location .azurite-test &
+          sleep 3
+
+          cd src/Verdict.Functions
+          func start --no-build &
+          cd ../..
+
+          http-server docs -p 8080 -c-1 --silent &
+          sleep 10   # give Functions time to warm up
+
+      - name: Run Reqnroll E2E tests
+        run: >
+          dotnet test tests/Verdict.E2E/Verdict.E2E.csproj
+          -c Release
+          --no-build
+          --logger trx
+          --results-directory TestResults
+        env:
+          CI_SERVERS_RUNNING: "true"
+
+      - name: Upload screenshots and test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-results
+          path: |
+            TestResults/
+            tests/Verdict.E2E/bin/Release/net10.0/TestResults/screenshots/
+
+  deploy:
+    name: Deploy to Azure
+    runs-on: ubuntu-latest
+    needs: e2e-test
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: functions-publish
+          path: ./publish
+
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy to Function App
+        uses: Azure/functions-action@v1
+        with:
+          app-name: verdict-fn
+          package: ./publish

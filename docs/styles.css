@@ -1,0 +1,308 @@
+/* ==========================================================================
+   Verdict — styles
+   Courtroom aesthetic: dark wood, parchment, brass accents
+   ========================================================================== */
+
+:root {
+  --bg:        #1a1209;
+  --surface:   #2a1e0f;
+  --card-bg:   #f5f0e8;
+  --card-border: #c9a96e;
+  --text:      #f5f0e8;
+  --text-dark: #2a1e0f;
+  --accent:    #c9a96e;
+  --accent2:   #8b2c2c;
+  --pro-color: #8b2c2c;
+  --def-color: #2c5282;
+  --success:   #2d6a2d;
+  --danger:    #8b2c2c;
+  --warn:      #b5620e;
+  --radius:    8px;
+  --shadow:    0 4px 24px rgba(0,0,0,0.5);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: Georgia, 'Times New Roman', serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 1rem;
+}
+
+/* ==========================================================================
+   Screens
+   ========================================================================== */
+.screen { display: none; max-width: 640px; margin: 0 auto; }
+.screen.active { display: block; }
+.hidden { display: none !important; }
+
+/* ==========================================================================
+   Header
+   ========================================================================== */
+.court-header {
+  text-align: center;
+  padding: 2rem 0 1.5rem;
+  border-bottom: 1px solid var(--accent);
+  margin-bottom: 1.5rem;
+}
+.court-header.small { padding: 1rem 0 0.75rem; margin-bottom: 1rem; }
+.court-header h1 { font-size: 2.5rem; letter-spacing: 0.05em; color: var(--accent); }
+.court-header.small h1 { font-size: 1.5rem; }
+.tagline { color: #a89060; font-style: italic; margin-top: 0.25rem; }
+.room-code-display { font-size: 1rem; color: var(--accent); margin-top: 0.25rem; }
+.round-badge {
+  display: inline-block;
+  background: var(--accent);
+  color: var(--bg);
+  padding: 0.2rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-family: sans-serif;
+  margin-top: 0.5rem;
+}
+
+/* ==========================================================================
+   Cards
+   ========================================================================== */
+.card {
+  background: var(--card-bg);
+  color: var(--text-dark);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--card-border);
+}
+
+.card h2 { margin-bottom: 0.75rem; font-size: 1.2rem; }
+
+.take-card blockquote {
+  font-size: 1.2rem;
+  font-style: italic;
+  border-left: 4px solid var(--accent2);
+  padding-left: 1rem;
+  margin-top: 0.5rem;
+  color: var(--text-dark);
+}
+.take-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #888;
+  font-family: sans-serif;
+}
+
+/* ==========================================================================
+   Forms
+   ========================================================================== */
+label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: bold;
+  margin: 0.75rem 0 0.25rem;
+  font-family: sans-serif;
+}
+
+input[type=text], select, textarea {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: var(--radius);
+  font-size: 1rem;
+  font-family: inherit;
+  background: #fff;
+  color: var(--text-dark);
+}
+input[type=text]:focus, select:focus, textarea:focus {
+  outline: 2px solid var(--accent);
+  border-color: var(--accent);
+}
+textarea { resize: vertical; }
+
+.char-counter-row { text-align: right; margin-top: 0.25rem; }
+#arg-char-count {
+  font-size: 0.8rem;
+  font-family: sans-serif;
+  color: #666;
+  transition: color 0.2s;
+}
+#arg-char-count.warn { color: var(--warn); font-weight: bold; }
+#arg-char-count.over { color: var(--danger); font-weight: bold; }
+
+.take-row { margin-bottom: 0.5rem; }
+
+/* ==========================================================================
+   Buttons
+   ========================================================================== */
+.btn {
+  display: inline-block;
+  padding: 0.65rem 1.4rem;
+  border-radius: var(--radius);
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  font-family: sans-serif;
+  font-weight: 600;
+  transition: opacity 0.15s, transform 0.1s;
+  text-align: center;
+}
+.btn:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.btn:active:not(:disabled) { transform: translateY(0); }
+
+.btn-primary   { background: var(--accent2); color: #fff; }
+.btn-secondary { background: var(--surface); color: var(--text); border: 1px solid var(--accent); }
+.btn-ghost     { background: transparent; color: var(--text-dark); border: 1px solid #bbb; }
+
+.btn-large { padding: 0.85rem 2rem; font-size: 1.1rem; }
+.btn-small { padding: 0.35rem 0.8rem; font-size: 0.85rem; }
+.btn { width: 100%; margin-top: 0.75rem; }
+.btn-small { width: auto; }
+
+.divider {
+  text-align: center;
+  margin: 0.75rem 0;
+  color: #888;
+  font-family: sans-serif;
+}
+
+/* ==========================================================================
+   Player lists / scores
+   ========================================================================== */
+.player-list  { margin: 0.75rem 0; }
+.player-row   { padding: 0.4rem 0; border-bottom: 1px solid #ddd; font-family: sans-serif; }
+.player-row:last-child { border-bottom: none; }
+
+.score-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid #ddd;
+  font-family: sans-serif;
+}
+.score-row:last-child { border-bottom: none; }
+.score-pts { font-weight: bold; }
+
+.rank-row { align-items: center; }
+.rank-medal { font-size: 1.2rem; margin-right: 0.5rem; }
+
+/* ==========================================================================
+   Side badge
+   ========================================================================== */
+.side-badge {
+  display: inline-block;
+  padding: 0.5rem 1.25rem;
+  border-radius: 999px;
+  font-weight: bold;
+  font-family: sans-serif;
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+}
+.side-badge[data-side="PROSECUTION"] { background: var(--pro-color); color: #fff; }
+.side-badge[data-side="DEFENSE"]     { background: var(--def-color); color: #fff; }
+
+/* ==========================================================================
+   Argument cards (vote + reveal)
+   ========================================================================== */
+.arg-cards { display: flex; flex-direction: column; gap: 0.75rem; }
+.arg-card {
+  background: #fff;
+  border: 2px solid #ddd;
+  border-radius: var(--radius);
+  padding: 1rem;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.arg-card:hover:not(.readonly):not(.reveal-card) {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(201,169,110,0.25);
+}
+.arg-card.selected { border-color: var(--accent2); box-shadow: 0 0 0 3px rgba(139,44,44,0.25); }
+.arg-card.readonly { cursor: default; }
+.arg-card p { margin-top: 0.4rem; font-size: 0.95rem; color: var(--text-dark); }
+
+.arg-side-label {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-family: sans-serif;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.arg-side-label.prosecution { background: var(--pro-color); color: #fff; }
+.arg-side-label.defense     { background: var(--def-color); color: #fff; }
+
+.reveal-author {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  font-family: sans-serif;
+  color: #555;
+  border-top: 1px solid #eee;
+  padding-top: 0.4rem;
+}
+
+/* ==========================================================================
+   Contempt
+   ========================================================================== */
+.contempt-card { background: #fff3cd; border-color: #e0a820; }
+.contempt-badge {
+  background: #e0a820;
+  color: #fff;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-family: sans-serif;
+  font-weight: bold;
+  margin-left: 0.25rem;
+}
+
+/* ==========================================================================
+   Voting controls
+   ========================================================================== */
+.vote-controls { margin-top: 1rem; }
+.stance-row { display: flex; gap: 0.75rem; margin: 0.5rem 0; }
+.stance-row .btn { flex: 1; margin-top: 0; }
+.stance-btn.selected { border-color: var(--accent2); background: #ffe8e8; }
+
+/* ==========================================================================
+   Status / notices
+   ========================================================================== */
+.status-text { font-size: 0.9rem; color: #555; font-family: sans-serif; margin: 0.5rem 0; }
+.instruction { font-size: 0.9rem; color: #555; font-family: sans-serif; margin-bottom: 0.75rem; }
+.notice { color: var(--success); font-family: sans-serif; font-size: 0.9rem; margin-top: 0.5rem; }
+.error  { color: var(--danger);  font-family: sans-serif; font-size: 0.875rem; margin-top: 0.5rem; }
+
+.join-link {
+  font-family: monospace;
+  font-size: 0.8rem;
+  word-break: break-all;
+  background: #f0f0f0;
+  padding: 0.4rem;
+  border-radius: 4px;
+  color: #333;
+}
+
+/* ==========================================================================
+   Connecting overlay
+   ========================================================================== */
+.connecting {
+  position: fixed;
+  inset: 0;
+  background: rgba(26,18,9,0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.connecting-inner {
+  background: var(--card-bg);
+  color: var(--text-dark);
+  padding: 1.5rem 2.5rem;
+  border-radius: var(--radius);
+  font-size: 1.1rem;
+  font-family: sans-serif;
+}

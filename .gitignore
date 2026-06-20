@@ -1,0 +1,37 @@
+# Build output
+bin/
+obj/
+
+# Azure Functions local settings (contains connection strings)
+local.settings.json
+
+# Azure
+.azure/
+
+# Azurite storage emulator
+__azurite_db*__.json
+__azurite_db*__.log
+
+# Visual Studio
+*.user
+*.suo
+.vs/
+.vscode/
+
+# Node / Playwright
+node_modules/
+tests/e2e/node_modules/
+test-results/
+playwright-report/
+
+# macOS
+.DS_Store
+
+# Dotnet publish output
+publish/
+
+# Azurite local data (files matched above, exclude directory too)
+.azurite-test/
+
+# NUnit test results
+TestResults/
