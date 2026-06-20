@@ -74,20 +74,6 @@ jobs:
       - name: Install Playwright browsers
         run: pwsh tests/Verdict.E2E/bin/Release/net10.0/playwright.ps1 install --with-deps chromium
 
-      - name: Create local.settings.json (CI — gitignored locally)
-        run: |
-          cat > src/Verdict.Functions/local.settings.json << 'EOF'
-          {
-            "IsEncrypted": false,
-            "Values": {
-              "AzureWebJobsStorage": "UseDevelopmentStorage=true",
-              "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
-              "TableConnection": "UseDevelopmentStorage=true"
-            },
-            "Host": { "LocalHttpPort": 7071, "CORS": "*", "CORSCredentials": false }
-          }
-          EOF
-
       - name: Start dev stack (Azurite + Functions + static server)
         run: |
           mkdir -p .azurite-test
@@ -95,11 +81,15 @@ jobs:
           sleep 3
 
           cd src/Verdict.Functions/bin/Release/net10.0
-          func start --no-build &
+          func start --no-build --dotnet-isolated &
           cd ../../../../..
 
           http-server docs -p 8080 -c-1 --silent &
           sleep 20   # .NET cold start needs ~15-20 s on GitHub runners
+        env:
+          AzureWebJobsStorage: "UseDevelopmentStorage=true"
+          TableConnection: "UseDevelopmentStorage=true"
+          FUNCTIONS_WORKER_RUNTIME: "dotnet-isolated"
 
       - name: Run Reqnroll E2E tests
         run: >
