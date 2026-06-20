@@ -40,6 +40,7 @@ jobs:
         with:
           name: functions-publish
           path: ./publish
+          include-hidden-files: true
 
   e2e-test:
     name: Reqnroll E2E (3-player, Playwright)
