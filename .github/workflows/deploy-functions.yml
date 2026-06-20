@@ -134,14 +134,77 @@ jobs:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Deploy infrastructure (Bicep)
+      - name: Deploy infrastructure (Bicep) and configure Function App
         run: |
-          az deployment group create \
+          # --- 1. Deploy storage + App Insights via Bicep (idempotent) --------
+          # The consumption plan and function app are NOT in the Bicep template.
+          # ARM preflight validation incorrectly checks Y1/Dynamic plans against
+          # VM quotas on VS Enterprise (quota = 0), blocking the deployment even
+          # though serverless uses no VMs. Creating via CLI bypasses this check.
+          DEPLOY_OUT=$(az deployment group create \
             --resource-group rg-verdict \
             --subscription ${{ vars.AZURE_SUBSCRIPTION_ID }} \
             --template-file infra/main.bicep \
             --parameters infra/main.parameters.json \
-            --mode Incremental
+            --mode Incremental \
+            --query properties.outputs \
+            -o json)
+
+          STORAGE_ACCOUNT=$(echo "$DEPLOY_OUT" | jq -r '.storageAccountName.value')
+          AI_CONNECTION=$(echo "$DEPLOY_OUT" | jq -r '.appInsightsConnectionString.value')
+
+          # --- 2. Build storage connection string from key --------------------
+          STORAGE_KEY=$(az storage account keys list \
+            --account-name "$STORAGE_ACCOUNT" \
+            --resource-group rg-verdict \
+            --subscription ${{ vars.AZURE_SUBSCRIPTION_ID }} \
+            --query '[0].value' -o tsv)
+          STORAGE_CONN="DefaultEndpointsProtocol=https;AccountName=${STORAGE_ACCOUNT};AccountKey=${STORAGE_KEY};EndpointSuffix=core.windows.net"
+
+          # --- 3. Create function app if it does not exist -------------------
+          # --consumption-plan-location skips ARM preflight and creates the Y1
+          # plan + site directly, without the VM quota check that blocks Bicep.
+          if ! az functionapp show \
+              --name verdict-backend \
+              --resource-group rg-verdict \
+              --subscription ${{ vars.AZURE_SUBSCRIPTION_ID }} \
+              --output none 2>/dev/null; then
+            az functionapp create \
+              --name verdict-backend \
+              --resource-group rg-verdict \
+              --subscription ${{ vars.AZURE_SUBSCRIPTION_ID }} \
+              --consumption-plan-location eastus \
+              --runtime dotnet-isolated \
+              --runtime-version 10 \
+              --functions-version 4 \
+              --storage-account "$STORAGE_ACCOUNT" \
+              --os-type Windows \
+              --https-only true
+          fi
+
+          # --- 4. Sync app settings (idempotent) ----------------------------
+          az functionapp config appsettings set \
+            --name verdict-backend \
+            --resource-group rg-verdict \
+            --subscription ${{ vars.AZURE_SUBSCRIPTION_ID }} \
+            --settings \
+              "AzureWebJobsStorage=$STORAGE_CONN" \
+              "FUNCTIONS_EXTENSION_VERSION=~4" \
+              "FUNCTIONS_WORKER_RUNTIME=dotnet-isolated" \
+              "TableConnection=$STORAGE_CONN" \
+              "APPLICATIONINSIGHTS_CONNECTION_STRING=$AI_CONNECTION" \
+              "WEBSITE_USE_PLACEHOLDER_DOTNETISOLATED=1"
+
+          # --- 5. Ensure CORS origins are present ---------------------------
+          az functionapp cors add \
+            --name verdict-backend \
+            --resource-group rg-verdict \
+            --subscription ${{ vars.AZURE_SUBSCRIPTION_ID }} \
+            --allowed-origins \
+              "https://kolatts.github.io" \
+              "http://localhost:8080" \
+              "http://127.0.0.1:5500" \
+            2>/dev/null || true
 
       - name: Zip and deploy to Function App
         run: |
