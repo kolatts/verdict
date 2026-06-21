@@ -450,18 +450,76 @@ async function handleJoin() {
 }
 
 // Takes form
-const PRELOADED_TAKES = [
-  'Open offices were a war crime',
-  'Lunch meetings should be illegal',
-  'Remote work killed company culture',
-  'Morning people are insufferable',
-  'Networking events are purely performative',
-  'Reply-all should be a fireable offense',
-  'Standing desks are a personality, not a tool',
-  'Group chats do more harm than good',
-  'Unlimited PTO means zero PTO',
-  'The office kitchen is a lawless zone',
+const TAKES_POOL = [
+  // RTO
+  "Mandating RTO to justify real estate spend is a real estate decision dressed up as a culture argument.",
+  "Proximity to your manager is not a productivity metric.",
+  "The people who thrived in the office before COVID are the ones most excited about coming back.",
+  '"Collaboration happens in person" is true — so is "interruptions happen in person."',
+  "Your RTO policy is a retention filter, and it's not keeping the people you think it is.",
+  'If the work got done remotely for three years, "we need to see each other" is a preference, not a business case.',
+  "Hybrid means different things to every manager, and that ambiguity is intentional.",
+  "The first thing companies track when they mandate RTO is badge swipes, not output.",
+  "Open floor plans were already failing before the pandemic — RTO didn't fix that.",
+  "Senior leaders who say culture requires presence usually have a private office.",
+  // Governance & Audit
+  "Most compliance processes are designed to produce evidence for auditors, not to actually reduce risk.",
+  "If your security review takes longer than your sprint, your governance process is the vulnerability.",
+  "A policy nobody reads isn't governance — it's legal cover.",
+  "The audit trail your team maintains is fine until the auditor asks a question nobody anticipated.",
+  "Governance frameworks get adopted after the incident, not before.",
+  '"We need to document that" is how teams avoid actually fixing the problem.',
+  "The difference between a mature security posture and security theater is whether anyone reviews what gets flagged.",
+  "Change advisory boards slow down deployments more than they prevent incidents.",
+  "Compliance certifications tell you what a company does on paper — not what it does at 3am during an outage.",
+  "Every enterprise \"approval workflow\" has at least one person in it who just clicks approve without reading.",
+  // Sprint / Scrum / Kanban
+  "Standups exist to give managers visibility, not to help engineers get unblocked.",
+  "A two-week sprint that always slips isn't a planning problem — it's a scope problem that planning is covering for.",
+  "Story points are a unit of feeling, not a unit of time, and pretending otherwise is how you get bad forecasts.",
+  "Velocity as a performance metric is how you get teams that game velocity.",
+  "The sprint retrospective where nothing changes is a ceremony, not a process improvement.",
+  'If your "definition of done" needs a meeting to interpret, it\'s not done being defined.',
+  "Kanban works until someone starts asking why the WIP limit keeps getting raised.",
+  '"We follow agile principles" usually means we do sprints and ignore the rest of the manifesto.',
+  "Every backlog older than six months is an archaeology project, not a product roadmap.",
+  "The sprint demo that impresses stakeholders and the sprint that ships real value are not always the same sprint.",
+  // Enterprise & Microservices
+  "You don't have microservices — you have a distributed monolith with network latency and no shared types.",
+  "Every cross-team dependency is a negotiation, and whoever has the less urgent roadmap wins.",
+  "The team that owns the shared platform is everyone's bottleneck and nobody's priority.",
+  '"We\'ll coordinate in the next PI planning" means it won\'t happen this quarter.',
+  "Service ownership means nothing without on-call accountability attached to it.",
+  "The reason your internal API is undocumented is that the team that built it didn't expect anyone else to use it.",
+  "Enterprise architecture diagrams describe the system as it was designed, not as it actually runs.",
+  'The "platform team" tax is real — every abstraction they add is a learning curve every other team pays.',
+  "Microservices solved deployment coupling and created organizational coupling instead.",
+  "Any integration that requires a Confluence page, a JIRA ticket, and a meeting to initiate is not an integration — it's a project.",
+  // Corporate Slowness
+  "The reason nothing ships in Q4 is not the holidays — it's that everyone stops committing to things in October.",
+  '"We need to loop in stakeholders" is how a two-day decision becomes a two-month one.',
+  "A committee that can approve but not reject is not a decision-making body — it's a delay mechanism.",
+  "The bigger the company, the longer the gap between the person with the problem and the person with the authority to fix it.",
+  "Most enterprise software tools are selected by people who will never have to use them daily.",
+  "Headcount approval processes are designed to slow hiring — not to ensure quality hires.",
+  "The vendor evaluation that runs for six months and ends with the safe incumbent choice wasn't really an evaluation.",
+  '"We\'re aligned" and "we agree on what to build" are not the same thing, and teams find out which one they meant in sprint three.',
+  "Nothing reveals your org chart faster than a production incident.",
+  "The company that takes nine months to onboard a new tool will never move faster than the company that ships its own.",
 ];
+
+function shuffled(arr) {
+  const copy = arr.slice();
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
+// Randomly selected takes for this page load — stable across round-count changes
+// so the takes don't reshuffle every time the dropdown changes.
+const SESSION_TAKES = shuffled(TAKES_POOL);
 
 function populateTakesForm() {
   const n   = parseInt(el('total-rounds').value, 10);
@@ -470,7 +528,7 @@ function populateTakesForm() {
     .map(i => i.value).filter(Boolean);
   con.innerHTML = '';
   for (let i = 0; i < n; i++) {
-    addTakeInput(existing[i] || PRELOADED_TAKES[i] || '', i + 1);
+    addTakeInput(existing[i] || SESSION_TAKES[i] || '', i + 1);
   }
 }
 
