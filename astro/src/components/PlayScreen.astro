@@ -1,0 +1,66 @@
+---
+---
+<section id="screen-play" class="screen hidden">
+  <header class="court-header small">
+    <h1>⚖️ Verdict</h1>
+    <span class="round-badge">
+      Round <span id="play-round">1</span> of <span id="play-total">3</span>
+    </span>
+  </header>
+
+  <div class="card take-card">
+    <p class="take-label">The Hot Take</p>
+    <blockquote id="play-take"></blockquote>
+  </div>
+
+  <!-- ARGUMENT sub-phase -->
+  <div id="play-argument" class="card hidden">
+    <div id="side-badge" class="side-badge"></div>
+    <p class="instruction">Write your argument (2–3 sentences). Make it convincing.</p>
+
+    <textarea
+      id="arg-text"
+      placeholder="Your argument…"
+      rows="5"
+      data-testid="arg-textarea"
+    ></textarea>
+
+    <div class="char-counter-row">
+      <span id="arg-char-count" data-testid="arg-char-count">0 / 280</span>
+    </div>
+
+    <button id="btn-submit-arg" class="btn btn-primary" disabled>Submit argument</button>
+    <p id="arg-submitted-notice" class="notice hidden">
+      ✅ Argument submitted. Waiting for others… <span id="arg-waiting-count"></span>
+    </p>
+    <p id="arg-error" class="error hidden"></p>
+  </div>
+
+  <!-- VOTE sub-phase -->
+  <div id="play-vote" class="card hidden">
+    <h2>Cast your votes</h2>
+    <p class="instruction">
+      Which argument was most convincing? And what do <em>you</em> actually think?
+    </p>
+
+    <div id="vote-args" class="arg-cards"></div>
+
+    <div id="vote-form" class="vote-controls hidden">
+      <label>Your real opinion on this take:</label>
+      <div class="stance-row">
+        <button id="btn-agree" class="btn btn-ghost stance-btn" data-stance="AGREE">
+          👍 Agree
+        </button>
+        <button id="btn-disagree" class="btn btn-ghost stance-btn" data-stance="DISAGREE">
+          👎 Disagree
+        </button>
+      </div>
+      <button id="btn-cast-vote" class="btn btn-primary" disabled>Submit votes</button>
+    </div>
+
+    <p id="vote-submitted-notice" class="notice hidden">
+      ✅ Votes cast. Waiting for others… <span id="vote-waiting-count"></span>
+    </p>
+    <p id="vote-error" class="error hidden"></p>
+  </div>
+</section>

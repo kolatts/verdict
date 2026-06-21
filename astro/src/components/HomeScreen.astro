@@ -1,0 +1,79 @@
+---
+const motes = Array.from({ length: 24 }, (_, i) => ({
+  delay: `${(i * 0.4).toFixed(1)}s`,
+  x: `${(i * 4.2 % 100).toFixed(1)}%`,
+  duration: `${6 + (i % 5)}s`,
+}));
+---
+<section id="screen-home" class="screen active">
+
+  <!-- Parallax layers (aria-hidden — purely decorative) -->
+  <div class="parallax-container" aria-hidden="true">
+    <div id="parallax-bg" class="parallax-layer parallax-bg"></div>
+
+    <div id="parallax-bench" class="parallax-layer parallax-bench">
+      <img src="/images/char-judge.png" alt="" class="judge-img" />
+    </div>
+
+    <div id="parallax-columns" class="parallax-layer parallax-columns"></div>
+
+    <div class="motes-layer">
+      {motes.map(m => (
+        <span
+          class="mote"
+          style={`--delay:${m.delay};--x:${m.x};--duration:${m.duration}`}
+        ></span>
+      ))}
+    </div>
+  </div>
+
+  <!-- Content floats above parallax -->
+  <div class="home-content">
+    <header class="court-header">
+      <h1>⚖️ Verdict</h1>
+      <p class="tagline">Hot takes on trial. Your honour is on the line.</p>
+    </header>
+
+    <div class="card">
+      <button id="btn-show-create" class="btn btn-primary btn-large">Create a room</button>
+      <div class="divider">or</div>
+      <button id="btn-show-join" class="btn btn-secondary btn-large">Join with a code</button>
+    </div>
+
+    <!-- Create form -->
+    <div id="form-create" class="card hidden">
+      <h2>Create room</h2>
+      <label for="host-name">Your name</label>
+      <input id="host-name" type="text" maxlength="24" placeholder="e.g. Judge Judy" />
+
+      <label for="total-rounds">Number of rounds</label>
+      <select id="total-rounds">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3" selected>3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+      </select>
+
+      <label>Hot takes (one per round)</label>
+      <div id="takes-container"></div>
+      <button id="btn-add-take" class="btn btn-ghost btn-small">＋ Add custom take</button>
+
+      <button id="btn-create" class="btn btn-primary">Create &amp; get room code</button>
+      <p id="create-error" class="error hidden"></p>
+    </div>
+
+    <!-- Join form -->
+    <div id="form-join" class="card hidden">
+      <h2>Join room</h2>
+      <label for="join-code">Room code</label>
+      <input id="join-code" type="text" maxlength="4" placeholder="e.g. 7KQ2"
+             style="text-transform:uppercase" />
+      <label for="join-name">Your name</label>
+      <input id="join-name" type="text" maxlength="24" placeholder="e.g. The Defendant" />
+      <button id="btn-join" class="btn btn-primary">Join room</button>
+      <p id="join-error" class="error hidden"></p>
+    </div>
+  </div>
+
+</section>

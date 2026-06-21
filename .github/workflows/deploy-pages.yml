@@ -5,7 +5,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'docs/**'
+      - 'astro/**'
       - '.github/workflows/deploy-pages.yml'
 
 permissions:
@@ -27,6 +27,21 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: astro/package-lock.json
+
+      - name: Install Astro dependencies
+        run: npm ci
+        working-directory: astro
+
+      - name: Build Astro site
+        run: npm run build
+        working-directory: astro
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
