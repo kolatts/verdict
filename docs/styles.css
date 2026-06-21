@@ -160,20 +160,6 @@ body {
   padding: 3rem 1.5rem 3rem;
 }
 
-@media (max-width: 480px) {
-  .home-content {
-    padding: 2.5rem 1.25rem 3.5rem;
-  }
-
-  .judge-hero {
-    margin-bottom: -3rem;
-  }
-
-  .court-header {
-    padding: 1.5rem 1.25rem 1.25rem;
-    margin-bottom: 1.25rem;
-  }
-}
 
 /* ==========================================================================
    Court header
@@ -622,4 +608,29 @@ input[type=text]:focus, select:focus, textarea:focus {
   height: 200px;
   object-fit: contain;
   filter: drop-shadow(0 4px 20px rgba(0,0,0,0.4));
+}
+
+/* ==========================================================================
+   Mobile home screen — must come after all base rules so overrides win
+   ========================================================================== */
+@media (max-width: 480px) {
+  .home-content {
+    padding: 1.5rem 1.25rem 2rem;
+  }
+
+  /* Use ID+class selector (specificity 1,1,0) to beat base .court-header (0,1,0) */
+  #screen-home .court-header {
+    padding: 1rem 1.25rem 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .judge-hero {
+    margin-bottom: -2rem;
+  }
+
+  /* Shrink the judge from 46vh to 32vh so it doesn't dominate the screen */
+  .judge-hero-img {
+    height: 32vh;
+    min-height: 140px;
+  }
 }
