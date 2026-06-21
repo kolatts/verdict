@@ -44,13 +44,13 @@ body {
   background-size: 256px 256px;
   color: var(--text);
   min-height: 100vh;
-  padding: 1rem;
+  padding: 0;
 }
 
 /* ==========================================================================
    Screens
    ========================================================================== */
-.screen { display: none; max-width: 640px; margin: 0 auto; }
+.screen { display: none; max-width: 640px; margin: 0 auto; padding: 1rem; }
 .screen.active { display: block; }
 .hidden { display: none !important; }
 
@@ -63,6 +63,7 @@ body {
   min-height: 100vh;
   overflow: hidden;
   padding: 0;
+  margin: 0;
 }
 
 /* Parallax container sits behind all content */
@@ -156,8 +157,9 @@ body {
   z-index: 10;
   max-width: 640px;
   margin: 0 auto;
-  padding: 3rem 1rem 2rem;
+  padding: 3rem 1.5rem 3rem;
 }
+
 
 /* ==========================================================================
    Court header
@@ -322,6 +324,62 @@ input[type=text]:focus, select:focus, textarea:focus {
 #arg-char-count.over { color: var(--danger); font-weight: bold; }
 
 .take-row { margin-bottom: 0.5rem; }
+.take-row .take-input { resize: vertical; }
+
+/* ==========================================================================
+   How to play
+   ========================================================================== */
+.how-to-play-link { display: block; margin: 0.75rem auto 0; }
+
+.how-to-play-steps {
+  padding-left: 1.4rem;
+  color: var(--text-dark);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+}
+
+.how-to-play-steps li { margin-bottom: 0.6rem; line-height: 1.55; }
+
+/* ==========================================================================
+   Reaction bar
+   ========================================================================== */
+.reaction-bar {
+  display: flex;
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.reaction-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.2rem 0.55rem;
+  border: 1.5px solid #c4a87a;
+  border-radius: 2rem;
+  background: transparent;
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+  font-family: inherit;
+  transition: transform 0.1s, background 0.15s, border-color 0.15s;
+}
+
+.reaction-btn:hover { background: rgba(200, 145, 42, 0.12); transform: scale(1.12); }
+.reaction-btn:active { transform: scale(0.96); }
+
+.reaction-btn.my-reaction {
+  background: rgba(200, 145, 42, 0.18);
+  border-color: var(--brass);
+  font-weight: 700;
+}
+
+.reaction-count {
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  color: var(--text-dark);
+}
 
 /* ==========================================================================
    Buttons
@@ -606,4 +664,29 @@ input[type=text]:focus, select:focus, textarea:focus {
   height: 200px;
   object-fit: contain;
   filter: drop-shadow(0 4px 20px rgba(0,0,0,0.4));
+}
+
+/* ==========================================================================
+   Mobile home screen — must come after all base rules so overrides win
+   ========================================================================== */
+@media (max-width: 480px) {
+  .home-content {
+    padding: 1.5rem 1.25rem 2rem;
+  }
+
+  /* Use ID+class selector (specificity 1,1,0) to beat base .court-header (0,1,0) */
+  #screen-home .court-header {
+    padding: 1rem 1.25rem 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .judge-hero {
+    margin-bottom: -2rem;
+  }
+
+  /* Shrink the judge from 46vh to 32vh so it doesn't dominate the screen */
+  .judge-hero-img {
+    height: 32vh;
+    min-height: 140px;
+  }
 }

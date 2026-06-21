@@ -267,6 +267,16 @@ function renderVoteCardSelection() {
 // ---------------------------------------------------------------------------
 // REVEAL
 // ---------------------------------------------------------------------------
+function buildReactionBar(a, round) {
+  const buttons = ['🔥', '💀', '😂'].map(e => {
+    const count  = a.reactions?.[e] ?? 0;
+    const active = a.myReaction === e ? ' my-reaction' : '';
+    const label  = count > 0 ? `${e}<span class="reaction-count">${count}</span>` : e;
+    return `<button class="reaction-btn${active}" data-author-guid="${escAttr(a.authorGuid)}" data-round="${round}" data-emoji="${e}" aria-label="React ${e}">${label}</button>`;
+  }).join('');
+  return `<div class="reaction-bar">${buttons}</div>`;
+}
+
 function renderReveal(s, phaseChanged) {
   el('reveal-round').textContent = (s.currentRound ?? 0) + 1;
   el('reveal-total').textContent = s.totalRounds;
@@ -285,15 +295,18 @@ function renderReveal(s, phaseChanged) {
         · ${a.bestArgVotes} best-arg vote${a.bestArgVotes !== 1 ? 's' : ''}
         ${contempt ? '<span class="contempt-badge">🔨 Held in Contempt</span>' : ''}
       </div>
+      ${buildReactionBar(a, s.currentRound)}
     </div>`;
   }).join('');
   el('reveal-args').innerHTML = `<h2>Arguments</h2>${argsHtml}`;
 
-  // Staggered card-flip animation
-  el('reveal-args').querySelectorAll('.arg-card').forEach((card, i) => {
-    card.style.animationDelay = `${i * 80}ms`;
-    card.classList.add('flip-in');
-  });
+  // Staggered card-flip animation — only on first entry to avoid re-flipping on reaction updates
+  if (phaseChanged) {
+    el('reveal-args').querySelectorAll('.arg-card').forEach((card, i) => {
+      card.style.animationDelay = `${i * 80}ms`;
+      card.classList.add('flip-in');
+    });
+  }
 
   // Contempt card
   const contemptPlayers = (s.players || []).filter(p =>
@@ -308,16 +321,18 @@ function renderReveal(s, phaseChanged) {
     hide('reveal-contempt');
   }
 
-  // Scores — rendered with animated count-up
-  const sortedPlayers = (s.players || []).slice().sort((a, b) => b.score - a.score);
-  const scoresHtml = sortedPlayers.map(p =>
-    `<div class="score-row">
-      <span class="score-name">${escHtml(p.name)}</span>
-      <span class="score-pts" data-target="${p.score}">0 pts</span>
-    </div>`
-  ).join('');
-  el('reveal-scores').innerHTML = `<h2>Scores so far</h2>${scoresHtml}`;
-  animateScores('reveal-scores');
+  // Scores — rendered with animated count-up, once per phase entry
+  if (phaseChanged) {
+    const sortedPlayers = (s.players || []).slice().sort((a, b) => b.score - a.score);
+    const scoresHtml = sortedPlayers.map(p =>
+      `<div class="score-row">
+        <span class="score-name">${escHtml(p.name)}</span>
+        <span class="score-pts" data-target="${p.score}">0 pts</span>
+      </div>`
+    ).join('');
+    el('reveal-scores').innerHTML = `<h2>Scores so far</h2>${scoresHtml}`;
+    animateScores('reveal-scores');
+  }
 
   // Host navigation buttons
   if (s.you?.isHost) {
@@ -397,6 +412,12 @@ function bindHomeEvents() {
 
   el('btn-create').addEventListener('click', handleCreate);
   el('btn-join').addEventListener('click', handleJoin);
+
+  el('btn-how-to-play').addEventListener('click', () => {
+    const card = el('how-to-play-card');
+    const open = card.classList.toggle('hidden');
+    el('btn-how-to-play').textContent = open ? 'How to play?' : 'Hide rules';
+  });
 }
 
 async function handleCreate() {
@@ -530,8 +551,8 @@ function addTakeInput(value, index) {
   const con = el('takes-container');
   const row = document.createElement('div');
   row.className = 'take-row';
-  row.innerHTML = `<input class="take-input" type="text" maxlength="160"
-      placeholder="Take ${index}" value="${escAttr(value)}" />`;
+  row.innerHTML = `<textarea class="take-input" maxlength="160" rows="2"
+      placeholder="Take ${index}">${escHtml(value)}</textarea>`;
   con.appendChild(row);
 }
 
@@ -645,6 +666,21 @@ function bindRevealEvents() {
       console.error('advance error', err);
     } finally {
       el('btn-final').disabled = false;
+    }
+  });
+
+  el('reveal-args').addEventListener('click', async e => {
+    const btn = e.target.closest('.reaction-btn');
+    if (!btn || !me.playerGuid) return;
+    try {
+      await apiFetch(`POST /rooms/${me.roomCode}/reactions`, {
+        playerGuid:    me.playerGuid,
+        round:         parseInt(btn.dataset.round, 10),
+        argAuthorGuid: btn.dataset.authorGuid,
+        emoji:         btn.dataset.emoji,
+      });
+    } catch (err) {
+      console.warn('reaction error', err);
     }
   });
 }

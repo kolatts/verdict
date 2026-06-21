@@ -39,6 +39,20 @@ const motes = Array.from({ length: 24 }, (_, i) => ({
       <button id="btn-show-join" class="btn btn-secondary btn-large">Join with a code</button>
     </div>
 
+    <button id="btn-how-to-play" class="btn btn-ghost btn-small how-to-play-link">How to play?</button>
+
+    <div id="how-to-play-card" class="card hidden">
+      <h2>How to play</h2>
+      <ol class="how-to-play-steps">
+        <li><strong>Host creates a room</strong> with 1–5 hot takes — controversial statements everyone will argue about.</li>
+        <li><strong>Share the code</strong> so friends can join. You need at least 3 players to start.</li>
+        <li><strong>Each round</strong> you're secretly assigned PROSECUTION or DEFENSE and must write a convincing argument — even if you personally disagree.</li>
+        <li><strong>Vote anonymously</strong> on the most convincing argument, then record your real opinion on the take.</li>
+        <li><strong>The reveal</strong> unmasks who wrote what. You score one point per vote your argument received. Zero votes = Contempt of Court. 🔨</li>
+        <li><strong>Most points</strong> after all rounds wins the verdict!</li>
+      </ol>
+    </div>
+
     <!-- Create form -->
     <div id="form-create" class="card hidden">
       <h2>Create room</h2>
