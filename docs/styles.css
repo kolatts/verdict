@@ -87,24 +87,21 @@ body {
   background-image: url('images/bg-courtroom.png');
 }
 
-/* Judge layer: positioned at the bottom-centre */
-.parallax-bench {
-  background: none;
-  inset: auto;
-  bottom: -8%;
-  left: 0;
-  right: 0;
-  height: 70%;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
+/* Judge hero — in content flow, between header and action card */
+.judge-hero {
+  text-align: center;
+  margin: 0 0 -4rem;
+  position: relative;
+  z-index: 5;
+  pointer-events: none;
 }
 
-.judge-img {
-  height: 90%;
-  max-height: 480px;
+.judge-hero-img {
+  height: 46vh;
+  max-height: 520px;
+  min-height: 200px;
   object-fit: contain;
-  filter: drop-shadow(0 4px 32px rgba(0,0,0,0.7));
+  filter: drop-shadow(0 8px 48px rgba(0,0,0,0.85));
 }
 
 /* Foreground columns — CSS-only dark mahogany pillars */
@@ -392,45 +389,44 @@ input[type=text]:focus, select:focus, textarea:focus {
 .rank-medal { font-size: 1.2rem; margin-right: 0.5rem; }
 
 /* ==========================================================================
-   Side badge — with character avatar
+   Side portrait — large character art above assignment label
    ========================================================================== */
 .side-badge {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 0.6rem;
-  padding: 0.4rem 1rem 0.4rem 0.4rem;
-  border-radius: 999px;
-  font-weight: 700;
-  font-family: 'Inter', sans-serif;
-  font-size: 0.9rem;
-  margin-bottom: 0.75rem;
-  animation: slideIn 200ms ease-out;
+  text-align: center;
+  gap: 0;
+  margin-bottom: 1rem;
+  animation: slideIn 250ms ease-out;
 }
 
 @keyframes slideIn {
-  from { transform: translateX(-10px); opacity: 0; }
-  to   { transform: translateX(0);     opacity: 1; }
+  from { transform: translateY(-10px); opacity: 0; }
+  to   { transform: translateY(0);     opacity: 1; }
 }
 
-.side-badge[data-side="PROSECUTION"] { background: var(--crimson); color: #fff; }
-.side-badge[data-side="DEFENSE"]     { background: var(--cobalt);  color: #fff; }
-
-.side-avatar-wrap {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.15);
-  overflow: hidden;
-  flex-shrink: 0;
-  border: 2px solid rgba(255,255,255,0.5);
+.side-character {
+  height: 200px;
+  max-width: 220px;
+  object-fit: contain;
+  object-position: center bottom;
+  filter: drop-shadow(0 4px 24px rgba(0,0,0,0.45));
+  margin-bottom: 0.5rem;
 }
 
-.side-avatar {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: 50% 15%;
+.side-badge-label {
+  display: inline-block;
+  padding: 0.4rem 1.2rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
 }
+
+.side-badge[data-side="PROSECUTION"] .side-badge-label { background: var(--crimson); color: #fff; }
+.side-badge[data-side="DEFENSE"]     .side-badge-label { background: var(--cobalt);  color: #fff; }
 
 /* ==========================================================================
    Argument cards
@@ -606,8 +602,8 @@ input[type=text]:focus, select:focus, textarea:focus {
 }
 
 .connecting-mouse {
-  width: 130px;
-  height: 130px;
+  width: 200px;
+  height: 200px;
   object-fit: contain;
-  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
+  filter: drop-shadow(0 4px 20px rgba(0,0,0,0.4));
 }

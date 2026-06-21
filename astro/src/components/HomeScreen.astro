@@ -10,11 +10,6 @@ const motes = Array.from({ length: 24 }, (_, i) => ({
   <!-- Parallax layers (aria-hidden — purely decorative) -->
   <div class="parallax-container" aria-hidden="true">
     <div id="parallax-bg" class="parallax-layer parallax-bg"></div>
-
-    <div id="parallax-bench" class="parallax-layer parallax-bench">
-      <img src="images/char-judge.png" alt="" class="judge-img" />
-    </div>
-
     <div id="parallax-columns" class="parallax-layer parallax-columns"></div>
 
     <div class="motes-layer">
@@ -33,6 +28,10 @@ const motes = Array.from({ length: 24 }, (_, i) => ({
       <h1>⚖️ Verdict</h1>
       <p class="tagline">Hot takes on trial. Your honour is on the line.</p>
     </header>
+
+    <div class="judge-hero" aria-hidden="true">
+      <img src="images/char-judge.png" alt="" class="judge-hero-img" />
+    </div>
 
     <div class="card">
       <button id="btn-show-create" class="btn btn-primary btn-large">Create a room</button>

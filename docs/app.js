@@ -81,7 +81,6 @@ function initParallax() {
 
   const layers = [
     { el: document.getElementById('parallax-bg'),      speed: 0.15 },
-    { el: document.getElementById('parallax-bench'),   speed: 0.35 },
     { el: document.getElementById('parallax-columns'), speed: 0.60 },
   ].filter(l => l.el);
 
@@ -187,15 +186,10 @@ function renderArgument(s, phaseChanged) {
   const side = s.you?.side || '';
   const sideBadge = el('side-badge');
   const charImg   = side === 'PROSECUTION' ? 'char-fox' : 'char-bear';
-  const sideText  = side === 'PROSECUTION'
-    ? 'PROSECUTION — argue FOR the take'
-    : 'DEFENSE — argue AGAINST the take';
-
+  const sideLabel = side === 'PROSECUTION' ? 'PROSECUTION — argue FOR' : 'DEFENSE — argue AGAINST';
   sideBadge.innerHTML = `
-    <div class="side-avatar-wrap">
-      <img src="images/${charImg}.png" class="side-avatar" alt="" />
-    </div>
-    <span>${escHtml(sideText)}</span>
+    <img src="images/${charImg}.png" class="side-character" alt="" />
+    <span class="side-badge-label">${escHtml(sideLabel)}</span>
   `;
   sideBadge.dataset.side = side;
 
