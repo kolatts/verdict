@@ -412,12 +412,6 @@ function bindHomeEvents() {
 
   el('btn-create').addEventListener('click', handleCreate);
   el('btn-join').addEventListener('click', handleJoin);
-
-  el('btn-how-to-play').addEventListener('click', () => {
-    const card = el('how-to-play-card');
-    const open = card.classList.toggle('hidden');
-    el('btn-how-to-play').textContent = open ? 'How to play?' : 'Hide rules';
-  });
 }
 
 async function handleCreate() {

@@ -91,7 +91,7 @@ body {
 /* Judge hero — in content flow, between header and action card */
 .judge-hero {
   text-align: center;
-  margin: 0 0 -4rem;
+  margin: 0 0 1rem;
   position: relative;
   z-index: 5;
   pointer-events: none;
@@ -679,7 +679,7 @@ input[type=text]:focus, select:focus, textarea:focus {
   }
 
   .judge-hero {
-    margin-bottom: -2rem;
+    margin-bottom: 0.75rem;
   }
 
   /* Shrink the judge from 46vh to 32vh so it doesn't dominate the screen */
