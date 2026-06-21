@@ -44,13 +44,13 @@ body {
   background-size: 256px 256px;
   color: var(--text);
   min-height: 100vh;
-  padding: 1rem;
+  padding: 0;
 }
 
 /* ==========================================================================
    Screens
    ========================================================================== */
-.screen { display: none; max-width: 640px; margin: 0 auto; }
+.screen { display: none; max-width: 640px; margin: 0 auto; padding: 1rem; }
 .screen.active { display: block; }
 .hidden { display: none !important; }
 
@@ -60,10 +60,10 @@ body {
 #screen-home {
   max-width: 100%;
   position: relative;
-  min-height: calc(100vh + 2rem);
+  min-height: 100vh;
   overflow: hidden;
   padding: 0;
-  margin: -1rem; /* bleed to viewport edges, negating body's 1rem padding */
+  margin: 0;
 }
 
 /* Parallax container sits behind all content */
