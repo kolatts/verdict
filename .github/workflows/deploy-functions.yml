@@ -9,6 +9,13 @@ on:
       - 'tests/**'
       - 'infra/**'
       - '.github/workflows/deploy-functions.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'infra/**'
+      - '.github/workflows/deploy-functions.yml'
 
 permissions:
   id-token: write

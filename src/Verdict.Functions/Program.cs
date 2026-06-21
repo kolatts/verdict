@@ -22,7 +22,7 @@ var app = builder.Build();
 // The func host's worker-start timeout is 60 s; Azurite responds in <1 s so
 // this is well within budget.
 var tables = app.Services.GetRequiredService<TableServiceClient>();
-foreach (var name in new[] { "Rooms", "Players", "Args", "Votes" })
+foreach (var name in new[] { "Rooms", "Players", "Args", "Votes", "Reactions" })
     await tables.CreateTableIfNotExistsAsync(name);
 
 app.Run();
