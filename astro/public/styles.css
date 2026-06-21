@@ -104,8 +104,7 @@ body {
   height: 90%;
   max-height: 480px;
   object-fit: contain;
-  mix-blend-mode: multiply;
-  filter: drop-shadow(0 4px 24px rgba(0,0,0,0.6));
+  filter: drop-shadow(0 4px 32px rgba(0,0,0,0.7));
 }
 
 /* Foreground columns — CSS-only dark mahogany pillars */
@@ -414,22 +413,21 @@ input[type=text]:focus, select:focus, textarea:focus {
 .side-badge[data-side="PROSECUTION"] { background: var(--crimson); color: #fff; }
 .side-badge[data-side="DEFENSE"]     { background: var(--cobalt);  color: #fff; }
 
-/* Circular frame with cream background so mix-blend-mode isn't needed */
 .side-avatar-wrap {
-  width: 42px;
-  height: 42px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  background: var(--cream);
+  background: rgba(255,255,255,0.15);
   overflow: hidden;
   flex-shrink: 0;
-  border: 2px solid rgba(255,255,255,0.4);
+  border: 2px solid rgba(255,255,255,0.5);
 }
 
 .side-avatar {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 50% 12%;
+  object-position: 50% 15%;
 }
 
 /* ==========================================================================
@@ -520,11 +518,11 @@ input[type=text]:focus, select:focus, textarea:focus {
 }
 
 .contempt-gavel {
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   object-fit: contain;
-  mix-blend-mode: multiply;
   flex-shrink: 0;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
 }
 
 .contempt-rule {
@@ -609,5 +607,5 @@ input[type=text]:focus, select:focus, textarea:focus {
   width: 130px;
   height: 130px;
   object-fit: contain;
-  mix-blend-mode: multiply;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
 }
