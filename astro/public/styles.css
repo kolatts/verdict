@@ -614,6 +614,31 @@ input[type=text]:focus, select:focus, textarea:focus {
 .notice { color: var(--success); font-family: 'Inter', sans-serif; font-size: 0.9rem; margin-top: 0.5rem; }
 .error  { color: var(--danger);  font-family: 'Inter', sans-serif; font-size: 0.875rem; margin-top: 0.5rem; }
 
+/* Indeterminate progress bar — waiting states */
+.progress-bar {
+  width: 100%;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(200, 145, 42, 0.18);
+  overflow: hidden;
+  margin: 0.25rem 0 0.5rem;
+}
+
+.progress-bar::after {
+  content: '';
+  display: block;
+  height: 100%;
+  width: 35%;
+  background: var(--brass);
+  border-radius: 2px;
+  animation: progress-slide 1.8s ease-in-out infinite;
+}
+
+@keyframes progress-slide {
+  0%   { transform: translateX(-200%); }
+  100% { transform: translateX(450%); }
+}
+
 .join-link {
   font-family: 'Courier Prime', monospace;
   font-size: 0.8rem;

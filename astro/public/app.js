@@ -124,12 +124,13 @@ async function poll() {
 // ---------------------------------------------------------------------------
 function render(s) {
   const key = `${s.phase}:${s.currentRound ?? ''}`;
+  const phaseChanged = key !== lastPhaseKey;
   switch (s.phase) {
-    case 'LOBBY':    showScreen('lobby');  renderLobby(s); break;
-    case 'ARGUMENT': showScreen('play');   renderArgument(s, key !== lastPhaseKey); break;
-    case 'VOTE':     showScreen('play');   renderVote(s, key !== lastPhaseKey); break;
-    case 'REVEAL':   showScreen('reveal'); renderReveal(s, key !== lastPhaseKey); break;
-    case 'FINAL':    showScreen('final');  renderFinal(s, key !== lastPhaseKey); break;
+    case 'LOBBY':    showScreen('lobby', phaseChanged);  renderLobby(s); break;
+    case 'ARGUMENT': showScreen('play', phaseChanged);   renderArgument(s, phaseChanged); break;
+    case 'VOTE':     showScreen('play', phaseChanged);   renderVote(s, phaseChanged); break;
+    case 'REVEAL':   showScreen('reveal', phaseChanged); renderReveal(s, phaseChanged); break;
+    case 'FINAL':    showScreen('final', phaseChanged);  renderFinal(s, phaseChanged); break;
   }
   lastPhaseKey = key;
 }
@@ -154,14 +155,17 @@ function renderLobby(s) {
     if (s.canStart) {
       startBtn.classList.remove('hidden');
       el('lobby-status').textContent = 'Room locked. Ready to start!';
+      hide('lobby-progress');
     } else {
       startBtn.classList.add('hidden');
       el('lobby-status').textContent =
         n < 3 ? `Waiting for players… (${n}/3 minimum)` : 'Waiting for first player to join to lock room…';
+      show('lobby-progress');
     }
   } else {
     el('btn-start').classList.add('hidden');
     el('lobby-status').textContent = 'Waiting for the host to start…';
+    show('lobby-progress');
   }
 }
 
@@ -734,13 +738,13 @@ async function apiFetch(endpoint, body) {
 // ---------------------------------------------------------------------------
 // UI helpers
 // ---------------------------------------------------------------------------
-function showScreen(name) {
+function showScreen(name, animate = true) {
   document.querySelectorAll('.screen').forEach(s => {
     const active = s.id === `screen-${name}`;
     s.classList.toggle('active', active);
     s.classList.toggle('hidden', !active);
 
-    if (active) {
+    if (active && animate) {
       const header = s.querySelector('.court-header');
       if (header) {
         header.classList.remove('phase-enter');
